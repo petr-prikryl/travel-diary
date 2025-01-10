@@ -1,24 +1,39 @@
 workflows:
-  ios-build:
-    name: "Capacitor iOS Build"
-    max_build_duration: 60
+  ios-workflow:
+    name: Build iOS App with Codemagic Certs
     environment:
       vars:
-        PROJECT_PATH: "ios/App.xcworkspace"
-        SCHEME: "App"
-      xcode: latest
+        NODE_VERSION: 18.16.0
+        XCODE_VERSION: latest
+    triggering:
+      events:
+        - push
+        - pull_request
     scripts:
-      - name: "Install dependencies"
+      - name: Install dependencies
+        script: npm install --legacy-peer-deps
+      - name: Build the web assets
+        script: npm run build
+      - name: Sync Capacitor
+        script: npx cap sync ios
+      - name: Build iOS project
         script: |
-          npm install
-          npx cap sync ios
-      - name: "Build iOS app"
+          cd ios/App
+          xcodebuild -workspace App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -archivePath $HOME/output/App.xcarchive \
+            archive
+      - name: Export iOS .ipa
         script: |
-          xcodebuild -workspace $PROJECT_PATH \
-                     -scheme $SCHEME \
-                     -configuration Debug \
-                     -sdk iphoneos \
-                     -derivedDataPath build \
-                     CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGN_ENTITLEMENTS="" CODE_SIGNING_ALLOWED=NO
+          xcodebuild -exportArchive \
+            -archivePath $HOME/output/App.xcarchive \
+            -exportOptionsPlist $CM_EXPORT_OPTIONS_PLIST \
+            -exportPath $HOME/output
     artifacts:
-      - build/Build/Products/Debug-iphoneos/*.app
+      - $HOME/output/*.ipa
+      - $HOME/output/*.xcarchive
+    publishing:
+      email:
+        recipients:
+          - petr@prikryl.cc
