@@ -1,6 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { getPlaces, deletePlace } from '../utils/storage'; // Import funkce deletePlace
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { getPlaces, deletePlace } from '../utils/storage'; // Import funkcí
+import { Icon } from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
+const defaultIcon = new Icon({
+    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    iconSize: [25, 41], // Velikost ikony
+    iconAnchor: [12, 41], // Bod ukotvení ikony
+    popupAnchor: [1, -34], // Umístění popupu vůči ikoně
+    shadowSize: [41, 41] // Velikost stínu
+});
 
 const PlaceDetailScreen = () => {
     const { id } = useParams();
@@ -20,9 +32,9 @@ const PlaceDetailScreen = () => {
 
     const handleDelete = async () => {
         try {
-            await deletePlace(id); // Smazání místa podle ID
+            await deletePlace(id);
             alert('Místo bylo úspěšně smazáno.');
-            navigate('/'); // Přesměrování na hlavní obrazovku
+            navigate('/');
         } catch (error) {
             console.error('Chyba při mazání místa:', error);
             alert('Nepodařilo se smazat místo.');
@@ -36,6 +48,22 @@ const PlaceDetailScreen = () => {
             <h1>{place.name}</h1>
             <p>{place.description}</p>
             <p>GPS souřadnice: {`Latitude: ${place.location.lat}, Longitude: ${place.location.lng}`}</p>
+
+            {/* Zobrazení mapy s markerem */}
+            <MapContainer
+                center={[place.location.lat, place.location.lng]}
+                zoom={13}
+                style={{ height: '400px', width: '100%' }}
+            >
+                <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
+                <Marker position={[place.location.lat, place.location.lng]} icon={defaultIcon}>
+                    <Popup>{place.name}</Popup>
+                </Marker>
+            </MapContainer>
+
             <button onClick={handleDelete}>Vymazat místo</button>
             <Link to="/">Zpět na seznam míst</Link>
         </div>
