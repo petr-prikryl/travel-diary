@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { getPlaces, deletePlace } from '../utils/storage'; // Import funkcí
+import { getPlaces, deletePlace } from '../utils/storage';
 import { Icon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { Button, Card, Container, Row, Col } from 'react-bootstrap';
 
 const defaultIcon = new Icon({
     iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-    iconSize: [25, 41], // Velikost ikony
-    iconAnchor: [12, 41], // Bod ukotvení ikony
-    popupAnchor: [1, -34], // Umístění popupu vůči ikoně
-    shadowSize: [41, 41] // Velikost stínu
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
 });
 
 const PlaceDetailScreen = () => {
@@ -22,7 +23,7 @@ const PlaceDetailScreen = () => {
     useEffect(() => {
         async function fetchPlaceDetails() {
             const places = await getPlaces();
-            const selectedPlace = places.find(place => place.id === id);
+            const selectedPlace = places.find((place) => place.id === id);
             if (selectedPlace) {
                 setPlace(selectedPlace);
             }
@@ -41,43 +42,62 @@ const PlaceDetailScreen = () => {
         }
     };
 
-    if (!place) return <p>Načítání...</p>;
+    if (!place) return <p className="text-center mt-5">Načítání...</p>;
 
     return (
-        <div>
-            <h1>{place.name}</h1>
-            <p>{place.description}</p>
-            <p>GPS souřadnice: {`Latitude: ${place.location.lat}, Longitude: ${place.location.lng}`}</p>
+        <Container className="mt-5">
+            <Card>
+                <Card.Body>
+                    <h1 className="text-center mb-4">{place.name}</h1>
+                    <p><strong>Popis:</strong> {place.description}</p>
+                    <p><strong>GPS souřadnice:</strong> Latitude: {place.location.lat}, Longitude: {place.location.lng}</p>
 
-            {/* Zobrazení uloženého počasí */}
-            {place.weather && (
-                <div style={{ marginBottom: '20px' }}>
-                    <h2>Počasí při uložení</h2>
-                    <p>Teplota: {Math.round(place.weather.main.temp - 273.15)}°C</p>
-                    <p>Podmínky: {place.weather.weather[0].description}</p>
-                </div>
-            )}
+                    {place.weather && (
+                        <div className="mb-4">
+                            <h4>Počasí při navštívení</h4>
+                            <p>Teplota: {Math.round(place.weather.main.temp - 273.15)}°C</p>
+                            <p>Podmínky: {place.weather.weather[0].description}</p>
+                        </div>
+                    )}
 
-            {/* Zobrazení mapy s markerem */}
-            <MapContainer
-                center={[place.location.lat, place.location.lng]}
-                zoom={13}
-                style={{ height: '400px', width: '100%' }}
-            >
-                <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-                <Marker position={[place.location.lat, place.location.lng]} icon={defaultIcon}>
-                    <Popup>{place.name}</Popup>
-                </Marker>
-            </MapContainer>
+                    <MapContainer
+                        center={[place.location.lat, place.location.lng]}
+                        zoom={13}
+                        style={{ height: '400px', width: '100%', marginBottom: '20px' }}
+                    >
+                        <TileLayer
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        />
+                        <Marker position={[place.location.lat, place.location.lng]} icon={defaultIcon}>
+                            <Popup>{place.name}</Popup>
+                        </Marker>
+                    </MapContainer>
 
-            <button onClick={handleDelete}>Vymazat místo</button>
-            <Link to="/">Zpět na seznam míst</Link>
-        </div>
+                    <Row className="mt-4">
+                        <Col>
+                            <Button
+                                variant="danger"
+                                onClick={handleDelete}
+                                className="w-100"
+                            >
+                                Vymazat místo
+                            </Button>
+                        </Col>
+                        <Col>
+                            <Button
+                                variant="outline-primary"
+                                onClick={() => navigate('/')}
+                                className="w-100"
+                            >
+                                Zpět na seznam míst
+                            </Button>
+                        </Col>
+                    </Row>
+                </Card.Body>
+            </Card>
+        </Container>
     );
-
 };
 
 export default PlaceDetailScreen;
