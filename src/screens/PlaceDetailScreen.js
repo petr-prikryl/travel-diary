@@ -1,42 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { getPlaces } from '../utils/storage';
-import { Button } from '@mui/material'; // Materiálové tlačítko
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { getPlaces, deletePlace } from '../utils/storage'; // Import funkce deletePlace
 
 const PlaceDetailScreen = () => {
-    const { id } = useParams(); // ID přichází jako string z URL
+    const { id } = useParams();
+    const navigate = useNavigate();
     const [place, setPlace] = useState(null);
-    const navigate = useNavigate(); // Hook pro navigaci zpět
 
     useEffect(() => {
         async function fetchPlaceDetails() {
-            const places = await getPlaces(); // Načtení všech uložených míst
-            const selectedPlace = places.find((place) => place.id === id); // Najdeme místo podle ID
-
+            const places = await getPlaces();
+            const selectedPlace = places.find(place => place.id === id);
             if (selectedPlace) {
-                setPlace(selectedPlace); // Uložíme nalezené místo do state
+                setPlace(selectedPlace);
             }
         }
         fetchPlaceDetails();
     }, [id]);
 
+    const handleDelete = async () => {
+        try {
+            await deletePlace(id); // Smazání místa podle ID
+            alert('Místo bylo úspěšně smazáno.');
+            navigate('/'); // Přesměrování na hlavní obrazovku
+        } catch (error) {
+            console.error('Chyba při mazání místa:', error);
+            alert('Nepodařilo se smazat místo.');
+        }
+    };
+
     if (!place) return <p>Načítání...</p>;
 
     return (
-        <div style={{ padding: '20px' }}>
+        <div>
             <h1>{place.name}</h1>
             <p>{place.description}</p>
-            <p>
-                <strong>GPS souřadnice:</strong> {`Latitude: ${place.location.lat}, Longitude: ${place.location.lng}`}
-            </p>
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={() => navigate(-1)} // Navigace zpět
-                style={{ marginTop: '20px' }}
-            >
-                Zpět
-            </Button>
+            <p>GPS souřadnice: {`Latitude: ${place.location.lat}, Longitude: ${place.location.lng}`}</p>
+            <button onClick={handleDelete}>Vymazat místo</button>
+            <Link to="/">Zpět na seznam míst</Link>
         </div>
     );
 };
