@@ -3,12 +3,16 @@ import { TextField, Button, Typography } from '@mui/material';
 import { savePlace } from '../utils/storage';
 import { useNavigate } from 'react-router-dom';
 import { Geolocation } from '@capacitor/geolocation';
+import { getWeather } from '../utils/api';
+
 
 function AddPlaceScreen() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState(null);
   const navigate = useNavigate();
+  const [weather, setWeather] = useState(null);
+
 
   const handleSavePlace = async () => {
     try {
@@ -25,6 +29,7 @@ function AddPlaceScreen() {
         name,
         description,
         location,
+        weather,
       };
 
       console.log('Nové místo k uložení:', newPlace);
@@ -37,28 +42,34 @@ function AddPlaceScreen() {
   };
 
   const handleGetLocation = async () => {
-    try {
-      const permissionStatus = await Geolocation.requestPermissions();
-      if (permissionStatus.location !== 'granted') {
-        alert('Oprávnění k poloze nebylo uděleno.');
-        return;
+      try {
+          const permissionStatus = await Geolocation.requestPermissions();
+          if (permissionStatus.location !== 'granted') {
+              alert('Oprávnění k poloze nebylo uděleno.');
+              return;
+          }
+
+          const position = await Geolocation.getCurrentPosition();
+          const { latitude, longitude } = position.coords;
+
+          const coords = {
+              lat: latitude,
+              lng: longitude,
+          };
+
+          setLocation(coords);
+          console.log('Získaná poloha:', coords);
+
+          // Získání počasí pro aktuální polohu
+          const weatherData = await getWeather(latitude, longitude);
+          setWeather(weatherData);
+          console.log('Získané počasí:', weatherData);
+      } catch (error) {
+          console.error('Chyba při získávání polohy:', error);
+          alert('Nepodařilo se získat polohu. Zkuste to znovu.');
       }
-
-      const position = await Geolocation.getCurrentPosition();
-      const { latitude, longitude } = position.coords;
-
-      const coords = {
-        lat: latitude,
-        lng: longitude,
-      };
-
-      setLocation(coords);
-      console.log('Získaná poloha:', coords);
-    } catch (error) {
-      console.error('Chyba při získávání polohy:', error);
-      alert('Nepodařilo se získat polohu. Zkuste to znovu.');
-    }
   };
+
 
 
   return (
@@ -93,10 +104,16 @@ function AddPlaceScreen() {
         Získat aktuální polohu
       </Button>
       {location && (
-        <Typography variant="body1" style={{ marginBottom: '20px' }}>
-          Aktuální poloha: {`Latitude: ${location.lat}, Longitude: ${location.lng}`}
-        </Typography>
-      )}
+                  <Typography variant="body1" style={{ marginBottom: '20px' }}>
+                      Aktuální poloha: {`Latitude: ${location.lat}, Longitude: ${location.lng}`}
+                  </Typography>
+              )}
+
+              {weather && (
+                  <Typography variant="body1" style={{ marginBottom: '20px' }}>
+                      Aktuální počasí: {`Teplota: ${Math.round(weather.main.temp - 273.15)}°C, Podmínky: ${weather.weather[0].description}`}
+                  </Typography>
+              )}
       <Button variant="contained" color="secondary" onClick={handleSavePlace}>
         Uložit místo
       </Button>
