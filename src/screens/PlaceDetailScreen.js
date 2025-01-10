@@ -49,6 +49,15 @@ const PlaceDetailScreen = () => {
             <p>{place.description}</p>
             <p>GPS souřadnice: {`Latitude: ${place.location.lat}, Longitude: ${place.location.lng}`}</p>
 
+            {/* Zobrazení uloženého počasí */}
+            {place.weather && (
+                <div style={{ marginBottom: '20px' }}>
+                    <h2>Počasí při uložení</h2>
+                    <p>Teplota: {Math.round(place.weather.main.temp - 273.15)}°C</p>
+                    <p>Podmínky: {place.weather.weather[0].description}</p>
+                </div>
+            )}
+
             {/* Zobrazení mapy s markerem */}
             <MapContainer
                 center={[place.location.lat, place.location.lng]}
@@ -68,6 +77,7 @@ const PlaceDetailScreen = () => {
             <Link to="/">Zpět na seznam míst</Link>
         </div>
     );
+
 };
 
 export default PlaceDetailScreen;
