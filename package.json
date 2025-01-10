@@ -8,6 +8,7 @@
     "@capacitor/cli": "^6.2.0",
     "@capacitor/core": "^6.2.0",
     "@capacitor/geolocation": "^6.1.0",
+    "@capacitor/ios": "^6.2.0",
     "@capacitor/storage": "^1.2.5",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",

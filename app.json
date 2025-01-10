@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "e83f16c9-fbb4-4eaa-9880-9bd78c00f6e7"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.petrprikryl.traveldiary"
+    }
+  }
+}
