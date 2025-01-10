@@ -17,9 +17,9 @@ const HomeScreen = () => {
         <div>
             <h1>Seznam míst</h1>
             <ul>
-                {places.map((place, index) => (
-                    <li key={index}>
-                        <Link to={`/place/${index}`}>{place.name}</Link>
+                {places.map((place) => (
+                    <li key={place.id}>
+                        <Link to={`/place/${place.id}`}>{place.name}</Link>
                     </li>
                 ))}
             </ul>
