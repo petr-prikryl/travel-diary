@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getPlaces } from '../utils/storage';
+import { Button } from '@mui/material'; // Materiálové tlačítko
 
 const PlaceDetailScreen = () => {
     const { id } = useParams(); // ID přichází jako string z URL
     const [place, setPlace] = useState(null);
+    const navigate = useNavigate(); // Hook pro navigaci zpět
 
     useEffect(() => {
         async function fetchPlaceDetails() {
@@ -21,12 +23,20 @@ const PlaceDetailScreen = () => {
     if (!place) return <p>Načítání...</p>;
 
     return (
-        <div>
+        <div style={{ padding: '20px' }}>
             <h1>{place.name}</h1>
             <p>{place.description}</p>
             <p>
                 <strong>GPS souřadnice:</strong> {`Latitude: ${place.location.lat}, Longitude: ${place.location.lng}`}
             </p>
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={() => navigate(-1)} // Navigace zpět
+                style={{ marginTop: '20px' }}
+            >
+                Zpět
+            </Button>
         </div>
     );
 };
