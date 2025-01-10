@@ -1,0 +1,24 @@
+workflows:
+  ios-build:
+    name: "Capacitor iOS Build"
+    max_build_duration: 60
+    environment:
+      vars:
+        PROJECT_PATH: "ios/App.xcworkspace"
+        SCHEME: "App"
+      xcode: latest
+    scripts:
+      - name: "Install dependencies"
+        script: |
+          npm install
+          npx cap sync ios
+      - name: "Build iOS app"
+        script: |
+          xcodebuild -workspace $PROJECT_PATH \
+                     -scheme $SCHEME \
+                     -configuration Debug \
+                     -sdk iphoneos \
+                     -derivedDataPath build \
+                     CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGN_ENTITLEMENTS="" CODE_SIGNING_ALLOWED=NO
+    artifacts:
+      - build/Build/Products/Debug-iphoneos/*.app
