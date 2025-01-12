@@ -1,70 +1,75 @@
-# Getting Started with Create React App
+  README - Android & iOS App body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; } h1, h2, h3 { color: #333; } code { background-color: #f4f4f4; padding: 2px 4px; border-radius: 4px; } pre { background-color: #f4f4f4; padding: 10px; border-radius: 4px; overflow-x: auto; } a { color: #007bff; text-decoration: none; }
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+README - Android & iOS Application
+==================================
 
-## Available Scripts
+Project Overview
+----------------
 
-In the project directory, you can run:
+This application allows users to add, view, and delete places with GPS coordinates. It uses **Capacitor** and **React** to create a cross-platform mobile app for Android and iOS.
 
-### `npm start`
+Features
+--------
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+*   Add new places with a name, description, and GPS coordinates.
+*   View details of a selected place, including its location on a map.
+*   Delete places from the list.
+*   Data is stored persistently using `@capacitor/storage`.
+*   Integration with GPS and Maps API for real-time location display.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Setup Instructions
+------------------
 
-### `npm test`
+### Prerequisites
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+*   Node.js and npm installed
+*   Capacitor CLI installed globally (`npm install -g @capacitor/cli`)
+*   Expo CLI installed globally (`npm install -g expo-cli`)
 
-### `npm run build`
+### Installation
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+    git clone <repository-url>
+    cd <project-folder>
+    npm install
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Running the App
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+**For Android:**
 
-### `npm run eject`
+    npx cap open android
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+**For iOS:** (Using Codemagic or Mac device)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    npx cap open ios
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Building the App
+----------------
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+To build the app for production:
 
-## Learn More
+    npx cap copy
+    npx cap sync
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Using Codemagic for iOS Builds
+------------------------------
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+If you don't have access to a Mac device, you can use [Codemagic](https://codemagic.io/) for iOS builds. Follow these steps:
 
-### Code Splitting
+1.  Connect your GitHub repository to Codemagic.
+2.  Trigger the build and download the resulting IPA file.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Dependencies
+------------
 
-### Analyzing the Bundle Size
+*   `react`
+*   `@capacitor/core`
+*   `@capacitor/android`
+*   `@capacitor/ios`
+*   `@capacitor/storage`
+*   `react-navigation`
+*   `react-native-maps`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+License
+-------
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project is licensed under the MIT License - see the LICENSE file for details.
